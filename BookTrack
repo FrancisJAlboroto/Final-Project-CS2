@@ -1,0 +1,52 @@
+# 📌 Project Proposal (Draft)
+
+## 📝 Project Title  
+BookTrack: Library Borrowing Data Analyzer 
+
+---
+
+## 🔍 Problem Statement  
+Libraries are a great feature in schools, providing free reading materials and resources. But it may be difficult to keep track of borrowing patterns, overdue returns, and book availability, leading to lost and unreturned textbooks. This problem brings a disadvantage to other students, and difficulty in understanding which subjects or books are in high demand. The dataset selected contains student borrowing records in the library, containing details like borrower ID, student name, book titles, and borrow and return dates. By analyzing this dataset, it allows us to identify the students' borrowing trends, track overdue books, and analyze the high demand books.
+
+---
+
+## 🎯 Project Objectives  
+Objective 1: To use the data provided and start off by seeing how many books are currently being borrowed and to check how many books one borrower has checked out, with other features to be developed.
+Objective 2: To make a conclusion about a certain pattern after analyzing the data.
+Objective 3: To fully understand how JSON is used in different areas, such as a library.
+
+---
+a
+## ⚙️ Planned Features  
+Planned Features The program will:
+
+1. Show which books are still borrowed (Not Yet Returned).
+2. Count how many books a user has checked out.
+3. Total the number of books borrowed overall (Regardless if returned or not).
+4. Show books that are overdue in return (Assuming 14 day return window).
+5. Show the most popular books during a period of time.
+*(You may add more features if you like.)*  
+
+---
+
+## ⌨️ Planned Inputs and Outputs  
+
+- **Inputs**  
+  - Name (first name and last name)
+  - Title of the book
+  - Author of the book
+  - Date of book borrowed
+  - Date of book returne 
+
+- **Outputs**  
+  - Number of people who borrowed specific books
+  - Average borrow duration per student(in days)
+  - Number of most borrowed book by subject
+  - Number of the books returned of each student
+  - Number of books the student has checked out
+  - Number of books still borrowed
+
+## 📂 GitHub Repository Link  
+Paste your GitHub repository link here:  
+https://github.com/FrancisJAlboroto/Final-Project-CS2
+---
