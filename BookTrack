@@ -19,13 +19,12 @@ Objective 3: To fully understand how JSON is used in different areas, such as a 
 a
 ## ⚙️ Planned Features  
 Planned Features The program will:
-
-1. Show which books are still borrowed (Not Yet Returned).
-2. Count how many books a user has checked out.
-3. Total the number of books borrowed overall (Regardless if returned or not).
-4. Show books that are overdue in return (Assuming 14 day return window).
-5. Show the most popular books during a period of time.
-*(You may add more features if you like.)*  
+1. Show which books are still borrowed (Not Yet Returned)
+2. Count how many books a user has checked out
+3. Total the number of books borrowed overall
+4. Find specific items by title or author
+5. Identify which student has borrowed a specific book (Title or Author)
+ 
 
 ---
 
@@ -35,16 +34,140 @@ Planned Features The program will:
   - Name (first name and last name)
   - Title of the book
   - Author of the book
-  - Date of book borrowed
-  - Date of book returne 
+  - Menu Choice
+  - Category Search term
 
 - **Outputs**  
   - Number of people who borrowed specific books
-  - Average borrow duration per student(in days)
-  - Number of most borrowed book by subject
-  - Number of the books returned of each student
   - Number of books the student has checked out
   - Number of books still borrowed
+  - Full List of all students and their currently borrowed books
+  - Student ID and List of Books for a specific student found by name
+  - Student ID and List of Books for a specific student found by name
+  - Confirmation Messages
+
+Logical PLan
+
+Pseudocode:
+
+data = ""
+name = ""
+category = ""
+
+data = CALL LOAD_DATA()
+choice = "0"
+
+WHILE choice != "5" DO
+    CALL DISPLAY_MENU()
+    choice = CALL GET_USER_CHOICE()
+
+    IF choice = "1" THEN
+        CALL SHOW_ALL_ITEMS(data)
+    ELSE IF choice = "2" THEN
+        name = INPUT("Enter student name to search:")
+        CALL SEARCH_ITEM_BY_NAME(data, name)
+    ELSE IF choice = "3" THEN
+        category = INPUT("Enter book title or author to search:")
+        CALL SHOW_ITEMS_BY_CATEGORY(data, category)
+    ELSE IF choice = "4" THEN
+        CALL CALCULATE_TOTAL_STOCK_VALUE(data)
+    ELSE IF choice = "5" THEN
+        PRINT("Ending program...")
+    ELSE
+        PRINT("Invalid choice, please try again.")
+    END IF
+END WHILE
+
+FUNCTION LOAD_DATA()
+    RETURN data 
+END FUNCTION
+
+FUNCTION DISPLAY_MENU()
+    PRINT("--------------------")
+    PRINT("1. Show all items")
+    PRINT("2. Search item by name")
+    PRINT("3. Show items by category")
+    PRINT("4. Calculate total stock value")
+    PRINT("5. End program")
+    PRINT("--------------------")
+END FUNCTION
+
+FUNCTION GET_USER_CHOICE()
+    choice = INPUT("Enter choice:")
+    RETURN choice
+END FUNCTION
+
+FUNCTION SHOW_ALL_ITEMS(data)
+    FOR i FROM 1 TO LENGTH(data)
+        borrower = data[i] 
+
+        PRINT "Student: " + borrower["student_name"] 
+        
+        FOR j FROM 1 TO LENGTH(borrower["books"])
+            book = borrower["books"][j] 
+
+            PRINT "    - Title: " + book["title"] + ", Author: " + book["author"]
+        END FOR
+    END FOR
+END FUNCTION
+
+FUNCTION SEARCH_ITEM_BY_NAME(data, name)
+    found = FALSE
+
+    FOR i FROM 1 TO LENGTH(data)
+        borrower = data[i]
+
+        IF borrower["student_name"] = name THEN
+            found = TRUE
+            PRINT "--- Student Found ---"
+            PRINT "Student ID: " + borrower["student_id"]
+
+            FOR j FROM 1 TO LENGTH(borrower["books"])
+                book = borrower["books"][j]
+                PRINT "    - Borrowed: " + book["title"]
+            END FOR
+            
+            BREAK 
+        END IF
+    END FOR
+
+    IF found = FALSE THEN
+        PRINT("Name not found")
+    END IF
+END FUNCTION
+
+FUNCTION SHOW_ITEMS_BY_CATEGORY(data, category)
+    found = FALSE
+
+    FOR i FROM 1 TO LENGTH(data)
+        borrower = data[i]
+        
+        FOR j FROM 1 TO LENGTH(borrower["books"])
+            book = borrower["books"][j]
+
+            IF book["title"] = category OR book["author"] = category THEN
+                found = TRUE
+                PRINT borrower["student_name"] + " has borrowed " + book["title"]
+            END IF
+        END FOR
+    END FOR
+
+    IF found = FALSE THEN
+        PRINT("No items found under this category")
+    END IF
+END FUNCTION
+
+FUNCTION CALCULATE_TOTAL_STOCK_VALUE(data)
+    total_books = 0
+
+    FOR i FROM 1 TO LENGTH(data)
+        borrower = data[i]
+
+        total_books = total_books + LENGTH(borrower["books"])
+    END FOR
+
+    PRINT("Total number of books borrowed: " + total_books)
+END FUNCTION
 
 ## 📂 GitHub Repository Link  
 Paste your GitHub repository link here:  
