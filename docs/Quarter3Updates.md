@@ -5,8 +5,8 @@ Lothar Cheo Y. Lachica                    - proposal (project objectives), code 
 Zoe Kyle O. Gaborne                       - proposal (planned features), code for feature 4
 Maria Angelica Ruth C. Magadan            - proposal (planned inputs/outputs), code for feature 5
 Update:
-1. Show which books are still borrowed (Not Yet Returned)
-2. Count how many books a user has checked out
-3. Total the number of books borrowed overall
-4. Find specific items by title or author
-5. Identify which student has borrowed a specific book (Title or Author)
+1 - Show Unreturned Books
+2 - Count Student Borrowed Books
+3 - Total Books Borrowed
+4 - Search Book
+5 - Find Who Borrowed a Book
