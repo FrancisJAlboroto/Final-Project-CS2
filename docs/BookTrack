@@ -50,43 +50,69 @@ Logical PLan
 Pseudocode:
 
 data = ""
-name = ""
-category = ""
-
-data = CALL LOAD_DATA()
 choice = "0"
+
+// Attempt to load data from the database
+TRY
+    data = CALL LOAD_DATA()
+CATCH Exception as e
+    PRINT "Error connecting to database: " + e
+    EXIT PROGRAM
+END TRY
 
 WHILE choice != "5" DO
     CALL DISPLAY_MENU()
     choice = CALL GET_USER_CHOICE()
 
     IF choice = "1" THEN
-        CALL SHOW_ALL_ITEMS(data)
+        // Prevent crashing if database is empty
+        IF data IS EMPTY THEN
+            PRINT "No records found."
+        ELSE
+            CALL SHOW_ALL_BORROWERS(data)
+        END IF
+
     ELSE IF choice = "2" THEN
         name = INPUT("Enter student name to search:")
-        CALL SEARCH_ITEM_BY_NAME(data, name)
+        // Prevent blank inputs
+        IF name IS EMPTY THEN
+            PRINT "Error: Name cannot be blank."
+            CONTINUE
+        END IF
+        CALL SEARCH_STUDENT(data, name)
+
     ELSE IF choice = "3" THEN
-        category = INPUT("Enter book title or author to search:")
-        CALL SHOW_ITEMS_BY_CATEGORY(data, category)
+        search_term = INPUT("Enter book title or author to search:")
+        // Prevent blank inputs
+        IF search_term IS EMPTY THEN
+            PRINT "Error: Search cannot be blank."
+            CONTINUE
+        END IF
+        CALL SEARCH_BOOK(data, search_term)
+
     ELSE IF choice = "4" THEN
-        CALL CALCULATE_TOTAL_STOCK_VALUE(data)
+        CALL CALCULATE_TOTAL_BOOKS(data)
+
     ELSE IF choice = "5" THEN
         PRINT("Ending program...")
+
     ELSE
-        PRINT("Invalid choice, please try again.")
+        // Fallback for invalid menu options (e.g., abc, 9)
+        PRINT("Invalid choice. Please enter a number between 1 and 5.")
     END IF
 END WHILE
 
+
 FUNCTION LOAD_DATA()
-    RETURN data 
+    RETURN REFERENCE("borrowers").GET()
 END FUNCTION
 
 FUNCTION DISPLAY_MENU()
     PRINT("--------------------")
-    PRINT("1. Show all items")
-    PRINT("2. Search item by name")
-    PRINT("3. Show items by category")
-    PRINT("4. Calculate total stock value")
+    PRINT("1. Show all borrowers and books")
+    PRINT("2. Search for a student")
+    PRINT("3. Search for a book (Title/Author)")
+    PRINT("4. Calculate total books borrowed")
     PRINT("5. End program")
     PRINT("--------------------")
 END FUNCTION
@@ -96,21 +122,25 @@ FUNCTION GET_USER_CHOICE()
     RETURN choice
 END FUNCTION
 
-FUNCTION SHOW_ALL_ITEMS(data)
+FUNCTION SHOW_ALL_BORROWERS(data)
     FOR i FROM 1 TO LENGTH(data)
         borrower = data[i] 
 
-        PRINT "Student: " + borrower["student_name"] 
+        // Safe fetching to prevent crashes if name is missing
+        student_name = GET_SAFE(borrower, "student_name", "Unknown Student")
+        PRINT "Student: " + student_name 
         
         FOR j FROM 1 TO LENGTH(borrower["books"])
             book = borrower["books"][j] 
+            title = GET_SAFE(book, "title", "Unknown Title")
+            author = GET_SAFE(book, "author", "Unknown Author")
 
-            PRINT "    - Title: " + book["title"] + ", Author: " + book["author"]
+            PRINT "    - Title: " + title + ", Author: " + author
         END FOR
     END FOR
 END FUNCTION
 
-FUNCTION SEARCH_ITEM_BY_NAME(data, name)
+FUNCTION SEARCH_STUDENT(data, name)
     found = FALSE
 
     FOR i FROM 1 TO LENGTH(data)
@@ -131,11 +161,11 @@ FUNCTION SEARCH_ITEM_BY_NAME(data, name)
     END FOR
 
     IF found = FALSE THEN
-        PRINT("Name not found")
+        PRINT("Student not found.")
     END IF
 END FUNCTION
 
-FUNCTION SHOW_ITEMS_BY_CATEGORY(data, category)
+FUNCTION SEARCH_BOOK(data, search_term)
     found = FALSE
 
     FOR i FROM 1 TO LENGTH(data)
@@ -144,7 +174,7 @@ FUNCTION SHOW_ITEMS_BY_CATEGORY(data, category)
         FOR j FROM 1 TO LENGTH(borrower["books"])
             book = borrower["books"][j]
 
-            IF book["title"] = category OR book["author"] = category THEN
+            IF book["title"] = search_term OR book["author"] = search_term THEN
                 found = TRUE
                 PRINT borrower["student_name"] + " has borrowed " + book["title"]
             END IF
@@ -152,16 +182,15 @@ FUNCTION SHOW_ITEMS_BY_CATEGORY(data, category)
     END FOR
 
     IF found = FALSE THEN
-        PRINT("No items found under this category")
+        PRINT("No books matching this title or author were found.")
     END IF
 END FUNCTION
 
-FUNCTION CALCULATE_TOTAL_STOCK_VALUE(data)
+FUNCTION CALCULATE_TOTAL_BOOKS(data)
     total_books = 0
 
     FOR i FROM 1 TO LENGTH(data)
         borrower = data[i]
-
         total_books = total_books + LENGTH(borrower["books"])
     END FOR
 
